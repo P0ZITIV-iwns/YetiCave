@@ -29,7 +29,7 @@
                             <span class="lot__amount">Стартовая цена</span>
                             <span class="lot__cost"><?=htmlspecialchars(format($item['price']))?></span>
                         </div>
-                        <div class="lot__timer timer <?=add_style($item['dateEnd'])?>">
+                        <div class="lot__timer timer <?=addStyle($item['dateEnd'])?>">
                             <?=timeLeft($item['dateEnd'])?>
                         </div>
                     </div>

@@ -7,7 +7,7 @@ function format($price): string
 
 function timeLeft($dateEnd): string
 {
-    $hours = floor((strtotime($dateEnd) - time()) / pow(SECONDS_IN_MINUTE, 2));
+    $hours = floor((strtotime($dateEnd) - time()) / SECONDS_IN_MINUTE**2);
     if ($hours < 9) {
         $hours = str_pad($hours, 2, '0', STR_PAD_LEFT);
     }
@@ -18,9 +18,17 @@ function timeLeft($dateEnd): string
     return "{$hours}:{$minutes}";
 }
 
-function add_style($dateEnd): string
+function addStyle($dateEnd): string
 {
+    $oneHour = 1;
     $hours = floor((strtotime($dateEnd) - time()) / SECONDS_IN_MINUTE**2);
-    $isAddStyle = $hours < 1;
+    $isAddStyle = $hours < $oneHour;
     return $isAddStyle ? 'timer--finishing' : '';
+}
+
+function get_categories($con)
+{
+    $sql_categories = 'SELECT * FROM Categories';
+    $result_categories = mysqli_query($con, $sql_categories);
+    return mysqli_fetch_all($result_categories, MYSQLI_ASSOC);
 }
