@@ -11,8 +11,5 @@ const DATABASE = 'giphyrii_m3';
 
 $con = mysqli_connect(HOSTNAME, USERNAME, PASSWORD, DATABASE);
 if (!$con) {
-    printf('Ошибка подключения: ' . mysqli_connect_error());
-}
-else {
-    printf('Соединение установлено');
+    print(mysqli_connect_error());
 }
