@@ -3,10 +3,10 @@ INSERT INTO Categories(name, symbol_code)
 VALUES
 ('Доски и лыжи', 'boards'),
 ('Крепления', 'attachment'),
-('Ботинки ', 'boots'),
-('Одежда ', 'clothing'),
-('Инструменты  ', 'tools'),
-('Разное  ', 'other');
+('Ботинки', 'boots'),
+('Одежда', 'clothing'),
+('Инструменты', 'tools'),
+('Разное', 'other');
 
 # Добавление пользователей
 INSERT INTO Users(created_datetime, email, name, password, contacts)
@@ -38,7 +38,7 @@ SELECT * FROM Categories;
 SELECT l.name, l.start_price, l.img, c.name AS category_name, l.date_finished
 FROM Lots AS l
 JOIN Categories AS c on l.category_id = c.id
-WHERE l.date_finished > CURRENT_TIMESTAMP
+WHERE l.date_finished >= CURRENT_DATE
 ORDER BY l.created_datetime DESC;
 
 # Показать информацию о лоте по его ID. Вместо id категории должно выводиться название категории, к которой принадлежит лот из таблицы категорий

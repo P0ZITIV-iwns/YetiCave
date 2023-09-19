@@ -1,29 +1,17 @@
 <?php
 const SECONDS_IN_MINUTE = 60;
-function format($price): string
+date_default_timezone_set('Asia/Yekaterinburg');
+function format(int $price): string
 {
     return number_format($price, 0, '.', ' ').' ₽';
 }
 
-function timeLeft($dateEnd): string
+function timeLeft(string $dateEnd): array
 {
-    $hours = floor((strtotime($dateEnd) - time()) / SECONDS_IN_MINUTE**2);
-    if ($hours < 9) {
-        $hours = str_pad($hours, 2, '0', STR_PAD_LEFT);
-    }
-    $minutes = floor(((strtotime($dateEnd) - time()) / SECONDS_IN_MINUTE) % SECONDS_IN_MINUTE);
-    if ($minutes < 9){
-        $minutes = str_pad($minutes, 2, '0', STR_PAD_LEFT);
-    }
-    return "{$hours}:{$minutes}";
-}
-
-function addStyle($dateEnd): string
-{
-    $oneHour = 1;
-    $hours = floor((strtotime($dateEnd) - time()) / SECONDS_IN_MINUTE**2);
-    $isAddStyle = $hours < $oneHour;
-    return $isAddStyle ? 'timer--finishing' : '';
+    $diffTime = strtotime($dateEnd . '+1 day') - time() + SECONDS_IN_MINUTE;
+    $hours = str_pad(floor($diffTime / SECONDS_IN_MINUTE**2), 2, '0', STR_PAD_LEFT);
+    $minutes = str_pad(floor(($diffTime / SECONDS_IN_MINUTE) % SECONDS_IN_MINUTE), 2, '0', STR_PAD_LEFT);
+    return ['hours' => $hours, 'minutes' => $minutes];
 }
 
 function getCategories($con): array
@@ -39,6 +27,7 @@ function getLots($con): array
                 l.name, l.description, l.img, l.start_price, l.step_price, l.date_finished, c.name AS category_name
                 FROM Lots AS l
                 JOIN Categories AS c on c.id = l.category_id
+                WHERE l.date_finished >= CURRENT_DATE
                 ORDER BY l.created_datetime DESC';
     $result_lots = mysqli_query($con, $sql_lots);
     return mysqli_fetch_all($result_lots, MYSQLI_ASSOC);

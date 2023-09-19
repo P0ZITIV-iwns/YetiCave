@@ -11,7 +11,7 @@ CREATE TABLE Users
     created_datetime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     email VARCHAR(50) NOT NULL UNIQUE,
     name VARCHAR(20) NOT NULL,
-    password VARCHAR(30) NOT NULL,
+    password VARCHAR(200) NOT NULL,
     contacts VARCHAR(200) NOT NULL
 );
 
@@ -19,7 +19,7 @@ CREATE TABLE Lots
 (
     id INT AUTO_INCREMENT PRIMARY KEY,
     creator_id INT NOT NULL,
-    winner_id INT NULL DEFAULT NULL,
+    winner_id INT NULL,
     category_id INT NOT NULL,
     created_datetime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     name VARCHAR(30) NOT NULL,
