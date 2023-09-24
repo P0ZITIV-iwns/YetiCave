@@ -22,7 +22,7 @@ CREATE TABLE Lots
     winner_id INT NULL,
     category_id INT NOT NULL,
     created_datetime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    name VARCHAR(30) NOT NULL,
+    name VARCHAR(60) NOT NULL,
     description VARCHAR(500) NOT NULL,
     img VARCHAR(200) NOT NULL,
     start_price INT UNSIGNED NOT NULL,
