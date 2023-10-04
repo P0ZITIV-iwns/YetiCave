@@ -32,7 +32,7 @@ function getLots(mysqli $con): array
     return mysqli_fetch_all($result_lots, MYSQLI_ASSOC);
 }
 
-function get_query_sql_result(mysqli $con, $result): array|null|false
+function get_query_sql_result(mysqli $con, $result): array|null
 {
     if ($result) {
         return mysqli_fetch_assoc($result);
@@ -42,7 +42,7 @@ function get_query_sql_result(mysqli $con, $result): array|null|false
     }
 }
 
-function getLotId(mysqli $con, int $lot_id): array|null|false
+function getLotId(mysqli $con, int $lot_id): array|null
 {
     $sql_lot = "SELECT l.*, c.name AS category_name
                 FROM Lots AS l
@@ -50,6 +50,38 @@ function getLotId(mysqli $con, int $lot_id): array|null|false
                 WHERE l.id = $lot_id
                 GROUP BY l.id";
     $result_lot = mysqli_query($con, $sql_lot);
-/*    return mysqli_fetch_array($result_lot, MYSQLI_ASSOC);*/
     return get_query_sql_result($con, $result_lot);
+}
+
+
+
+
+function getPostVal($name) {
+    return $_POST[$name] ?? "";
+}
+
+function addLot(mysqli $con, array $new_lot, int $creator_id)
+{
+    $sql_lot_add = "INSERT INTO Lots(name, date_finished, description, img, start_price, step_price, creator_id, category_id)
+                    VALUES
+                    ('{$new_lot['lot-name']}', '{$new_lot['lot-date']}', '{$new_lot['message']}', '{$new_lot['lot-img']}', '{$new_lot['lot-rate']}', '{$new_lot['lot-step']}', '$creator_id', '{$new_lot['category']}')";
+    $result_lot = mysqli_query($con, $sql_lot_add);
+    return $result_lot;
+    // $required_fields = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date'];
+    // $stmt = db_get_prepare_stmt(
+    //     $connection,
+    //     $add_lot_query,
+    //     [
+    //         user_input_filter(),
+    //         user_input_filter($new_lot['category']),
+    //         user_input_filter($new_lot['description']),
+    //         user_input_filter($new_lot['opening_price']),
+    //         user_input_filter($new_lot['price_increment']),
+    //         user_input_filter($new_lot['closing_time']),
+    //         user_input_filter($new_lot['image']),
+    //         $seller_id,
+    //     ]
+    // );
+    // $result = mysqli_stmt_execute($stmt);
+    // return $result;
 }
