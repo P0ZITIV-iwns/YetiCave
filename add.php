@@ -15,7 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[$field] = 'Поле не заполнено';
         } 
     }
-    print_r($_FILES['lot-img']['name']); 
     if (($_FILES['lot-img']['error'] === 0) && empty($errors))  {  
         $file_name = $_FILES['lot-img']['name'];
         $file_path = __DIR__ . '/uploads/';
