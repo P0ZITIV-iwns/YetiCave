@@ -15,17 +15,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[$field] = 'Поле не заполнено';
         } 
     }
-    if (isset($_FILES['lot-img']) && empty($errors))  {  
+    print_r($_FILES['lot-img']['name']); 
+    if (($_FILES['lot-img']['error'] === 0) && empty($errors))  {  
         $file_name = $_FILES['lot-img']['name'];
         $file_path = __DIR__ . '/uploads/';
         $file_url = '/uploads/' . $file_name;
         move_uploaded_file($_FILES['lot-img']['tmp_name'], $file_path . $file_name);
         $new_lot['lot-img'] = $file_url;
+        $result = addLot($con, $new_lot, 1);
+        $new_lot = mysqli_insert_id($con);
+        header('Location: lot.php?id=' . $new_lot);
     }
-    $result = addLot($con, $new_lot, 1);
-    $new_lot = mysqli_insert_id($con);
-    header('Location: lot.php?id=' . $new_lot);
-    exit;
 }
 
 $page_content = include_template('add-lot.php',[
