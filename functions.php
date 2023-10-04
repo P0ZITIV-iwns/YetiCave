@@ -32,7 +32,17 @@ function getLots(mysqli $con): array
     return mysqli_fetch_all($result_lots, MYSQLI_ASSOC);
 }
 
-function getLotId(mysqli $con, int $lot_id): array
+function get_query_sql_result(mysqli $con, $result): array|null|false
+{
+    if ($result) {
+        return mysqli_fetch_assoc($result);
+    } else {
+        print("Error MySQL: " . mysqli_error($con));
+        return [];
+    }
+}
+
+function getLotId(mysqli $con, int $lot_id): array|null|false
 {
     $sql_lot = "SELECT l.*, c.name AS category_name
                 FROM Lots AS l
@@ -40,5 +50,6 @@ function getLotId(mysqli $con, int $lot_id): array
                 WHERE l.id = $lot_id
                 GROUP BY l.id";
     $result_lot = mysqli_query($con, $sql_lot);
-    return mysqli_fetch_array($result_lot, MYSQLI_ASSOC);
+/*    return mysqli_fetch_array($result_lot, MYSQLI_ASSOC);*/
+    return get_query_sql_result($con, $result_lot);
 }
