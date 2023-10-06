@@ -32,16 +32,6 @@ function getLots(mysqli $con): array
     return mysqli_fetch_all($result_lots, MYSQLI_ASSOC);
 }
 
-function get_query_sql_result(mysqli $con, $result): array|null
-{
-    if ($result) {
-        return mysqli_fetch_assoc($result);
-    } else {
-        print("Error MySQL: " . mysqli_error($con));
-        return [];
-    }
-}
-
 function getLotId(mysqli $con, int $lot_id): array|null
 {
     $sql_lot = "SELECT l.*, c.name AS category_name
@@ -50,7 +40,7 @@ function getLotId(mysqli $con, int $lot_id): array|null
                 WHERE l.id = $lot_id
                 GROUP BY l.id";
     $result_lot = mysqli_query($con, $sql_lot);
-    return get_query_sql_result($con, $result_lot);
+    return mysqli_fetch_assoc($result_lot);
 }
 
 
@@ -71,7 +61,7 @@ function addLot(mysqli $con, array $new_lot, int $creator_id)
 function checkEmail(mysqli $con, string $email): bool
 {
     $sql_email = 'SELECT email FROM Users
-    WHERE email = "' . mysqli_real_escape_string($con, $email) . '"';
+                WHERE email = "' . mysqli_real_escape_string($con, $email) . '"';
     $result_email = mysqli_query($con, $sql_email);
     $result = mysqli_fetch_assoc($result_email);
     if ($result !== null) {
@@ -88,3 +78,22 @@ function addUser(mysqli $con, array $new_user)
     $result_user = mysqli_query($con, $sql_user_add);
 }
 
+function checkPassword(mysqli $con, string $email, string $password): bool
+{
+    $sql_password = 'SELECT password FROM Users
+                    WHERE email = "' . mysqli_real_escape_string($con, $email) . '"';
+    $result_password = mysqli_query($con, $sql_password);
+    $result = mysqli_fetch_assoc($result_password);
+    if ($result !== null && password_verify($password, $result['password']))  {
+        return true;
+    }
+    return false;
+}
+function checkUser(mysqli $con, string $email): array
+{
+    $sql_user = "SELECT id, name FROM Users
+                    WHERE email =" . "'" . $email . "'";
+
+    $result_user = mysqli_query($con, $sql_user);
+    return mysqli_fetch_assoc($result_user);
+}

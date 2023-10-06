@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $new_user['password'] = password_hash($new_user['password'], PASSWORD_DEFAULT);
         addUser($con, $new_user);
-        header('Location:/');
+        header('Location: login.php');
     }
 }
 
@@ -40,8 +40,6 @@ $page_content = include_template('sign-up.php',[
 
 $layout_content = include_template('layout.php', [
     'title' => 'Регистрация',
-    'is_auth' => $is_auth,
-    'user_name' => $user_name,
     'page_content' => $page_content,
     'categories' => $categories,
 ]);

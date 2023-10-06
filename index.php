@@ -13,8 +13,6 @@ $page_content = include_template('main.php', [
 
 $layout_content = include_template('layout.php', [
     'title' => 'Главная',
-    'is_auth' => $is_auth,
-    'user_name' => $user_name,
     'page_content' => $page_content,
     'categories' => $categories,
 ]);

@@ -29,8 +29,6 @@ if (http_response_code() === 404) {
 
 $layout_content = include_template("layout.php", [
     'title' => $lot ? $lot['name'] : 'Страница не найдена' ,
-    'is_auth' => $is_auth,
-    'user_name' => $user_name,
     'page_content' => $page_content,
     'categories' => $categories,
 ]);
