@@ -5,7 +5,6 @@ require_once('init.php');
 
 $categories = getCategories($con);
 $errors = [];
-$required_fields = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date'];
 $new_lot = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -21,12 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if ($new_lot['lot-rate'] === '') {
         $errors['lot-rate'] = 'Введите начальную цену';
-    } elseif (!($new_lot['lot-rate'] > 0 || is_float($new_lot['lot-rate']))) {
+    } elseif (!(filter_var($new_lot['lot-rate'], FILTER_VALIDATE_FLOAT) && $new_lot['lot-rate'] > 0)) {
         $errors['lot-rate'] = 'Введите число больше 0';
     }
     if ($new_lot['lot-step'] === '') {
         $errors['lot-step'] = 'Введите шаг ставки';
-    } elseif (!(preg_match('/^\d+$/', $new_lot['lot-step']) && $new_lot['lot-step'] > 0)) {
+    } elseif (!(filter_var($new_lot['lot-step'], FILTER_VALIDATE_INT) && $new_lot['lot-step'] > 0)) {
         $errors['lot-step'] = 'Введите целое число больше 0';
     }
     if (empty($new_lot['lot-date'])) {
@@ -61,7 +60,6 @@ $page_content = include_template('add-lot.php',[
     'categories' => $categories,
     'new_lot' => $new_lot,
     'errors' => $errors,
-    'required_fields' => $required_fields,
 ]);
 
 $layout_content = include_template('layout.php', [

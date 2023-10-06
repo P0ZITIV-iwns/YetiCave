@@ -5,7 +5,6 @@ require_once('init.php');
 
 $categories = getCategories($con);
 $errors = [];
-$required_fields = ['email', 'password'];
 $user = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -31,7 +30,6 @@ $page_content = include_template('login.php',[
     'categories' => $categories,
     'user' => $user,
     'errors' => $errors,
-    'required_fields' => $required_fields,
 ]);
 
 $layout_content = include_template('layout.php', [

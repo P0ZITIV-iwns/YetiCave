@@ -5,7 +5,6 @@ require_once('init.php');
 
 $categories = getCategories($con);
 $errors = [];
-$required_fields = ['email', 'password', 'name', 'message'];
 $new_user = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -35,7 +34,6 @@ $page_content = include_template('sign-up.php',[
     'categories' => $categories,
     'new_user' => $new_user,
     'errors' => $errors,
-    'required_fields' => $required_fields,
 ]);
 
 $layout_content = include_template('layout.php', [
