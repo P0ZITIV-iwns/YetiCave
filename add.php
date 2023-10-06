@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         move_uploaded_file($_FILES['lot-img']['tmp_name'], $file_path . $file_name);
         $new_lot['lot-img'] = $file_url;
-        $result = addLot($con, $new_lot, 1);
+        addLot($con, $new_lot, $_SESSION['user_id']);
         $new_lot = mysqli_insert_id($con);
         header('Location: lot.php?id=' . $new_lot);
     }

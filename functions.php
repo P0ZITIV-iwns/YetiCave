@@ -54,7 +54,6 @@ function addLot(mysqli $con, array $new_lot, int $creator_id)
                     VALUES
                     ('{$new_lot['lot-name']}', '{$new_lot['lot-date']}', '{$new_lot['message']}', '{$new_lot['lot-img']}', '{$new_lot['lot-rate']}', '{$new_lot['lot-step']}', '$creator_id', '{$new_lot['category']}')";
     $result_lot = mysqli_query($con, $sql_lot_add);
-    return mysqli_fetch_all($result_lot, MYSQLI_ASSOC);
 }
 
 
