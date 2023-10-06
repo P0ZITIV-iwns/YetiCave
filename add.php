@@ -1,23 +1,15 @@
 <?php
-require_once 'functions.php';
-require_once 'helpers.php';
-require_once 'init.php';
+require_once('functions.php');
+require_once('helpers.php');
+require_once('init.php');
+
 $categories = getCategories($con);
 $errors = [];
-//$required_fields = ['lot_name', 'category'];
 $required_fields = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date'];
 $new_lot = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $new_lot = $_POST;
-    // foreach ($required_fields as $field) {
-    //     if ($field == "lot-name") {
-    //         $errors[$field] = 'Поле не заполнено';
-    //     } 
-    //     if ($field == "lot-name") {
-    //         $errors[$field] = 'Поле не заполнено';
-    //     }
-    // }
     if (empty($new_lot['lot-name'])) {
         $errors['lot-name'] = 'Введите наименование лота';
     }

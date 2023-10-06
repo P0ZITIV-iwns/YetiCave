@@ -54,9 +54,7 @@ function getLotId(mysqli $con, int $lot_id): array|null
 }
 
 
-
-
-function getPostVal($name) {
+function getPostVal(string $name): string {
     return $_POST[$name] ?? "";
 }
 
@@ -66,22 +64,27 @@ function addLot(mysqli $con, array $new_lot, int $creator_id)
                     VALUES
                     ('{$new_lot['lot-name']}', '{$new_lot['lot-date']}', '{$new_lot['message']}', '{$new_lot['lot-img']}', '{$new_lot['lot-rate']}', '{$new_lot['lot-step']}', '$creator_id', '{$new_lot['category']}')";
     $result_lot = mysqli_query($con, $sql_lot_add);
-    return $result_lot;
-    // $required_fields = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date'];
-    // $stmt = db_get_prepare_stmt(
-    //     $connection,
-    //     $add_lot_query,
-    //     [
-    //         user_input_filter(),
-    //         user_input_filter($new_lot['category']),
-    //         user_input_filter($new_lot['description']),
-    //         user_input_filter($new_lot['opening_price']),
-    //         user_input_filter($new_lot['price_increment']),
-    //         user_input_filter($new_lot['closing_time']),
-    //         user_input_filter($new_lot['image']),
-    //         $seller_id,
-    //     ]
-    // );
-    // $result = mysqli_stmt_execute($stmt);
-    // return $result;
+    return mysqli_fetch_all($result_lot, MYSQLI_ASSOC);
 }
+
+
+function checkEmail(mysqli $con, string $email): bool
+{
+    $sql_email = 'SELECT email FROM Users
+    WHERE email = "' . mysqli_real_escape_string($con, $email) . '"';
+    $result_email = mysqli_query($con, $sql_email);
+    $result = mysqli_fetch_assoc($result_email);
+    if ($result !== null) {
+        return false;
+    }
+    return true;
+}
+
+function addUser(mysqli $con, array $new_user)
+{
+    $sql_user_add = "INSERT INTO Users(email, name, password, contacts)
+                    VALUES
+                    ('{$new_user['email']}', '{$new_user['name']}', '{$new_user['password']}', '{$new_user['message']}')";
+    $result_user = mysqli_query($con, $sql_user_add);
+}
+
