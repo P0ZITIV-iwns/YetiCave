@@ -48,7 +48,7 @@ function getPostVal(string $name): string {
     return $_POST[$name] ?? "";
 }
 
-function addLot(mysqli $con, array $new_lot, int $creator_id)
+function addLot(mysqli $con, array $new_lot, int $creator_id): void
 {
     $sql_lot_add = "INSERT INTO Lots(name, date_finished, description, img, start_price, step_price, creator_id, category_id)
                     VALUES
@@ -69,7 +69,7 @@ function checkEmail(mysqli $con, string $email): bool
     return true;
 }
 
-function addUser(mysqli $con, array $new_user)
+function addUser(mysqli $con, array $new_user): void
 {
     $sql_user_add = "INSERT INTO Users(email, name, password, contacts)
                     VALUES
