@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if (empty($new_lot['lot-date'])) {
         $errors['lot-date'] = 'Введите дату завершения торгов';
-    } elseif (!(preg_match('/\d{4}-\d\d-\d\d/',($new_lot['lot-date'])))) {
+    } elseif (!(is_date_valid($new_lot['lot-date']))) {
         $errors['lot-date'] = 'Дата должна быть в формате «ГГГГ-ММ-ДД»';
     } elseif ((strtotime($new_lot['lot-date'] . '-1 day') <= time())) {
         $errors['lot-date'] = 'Дата должна быть большей текущей хотя бы на один день';
