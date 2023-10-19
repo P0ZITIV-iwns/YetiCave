@@ -1,13 +1,5 @@
 <main>
-    <nav class="nav">
-        <ul class="nav__list container">
-            <?php foreach ($categories as $item): ?>
-                <li class="nav__item">
-                    <a href="pages/all-lots.html"><?= htmlspecialchars($item['name']); ?></a>
-                </li>
-            <?php endforeach; ?>
-        </ul>
-    </nav>
+    <?= $nav;?>
     <section class="lot-item container">
         <h2><?= htmlspecialchars($lot['name']); ?></h2>
         <div class="lot-item__content">
@@ -21,8 +13,8 @@
             <div class="lot-item__right">
                 <div class="lot-item__state">
                     <?php $timeLeft = timeLeft($lot['date_finished']); ?>
-                    <div class="lot-item__timer timer <?php if(intval($timeLeft[0]) < 24): ?>timer--finishing<?php endif?>">
-                        <?=$timeLeft[0] . ':' . $timeLeft[1]?>
+                    <div class="lot-item__timer timer <?php if($timeLeft[0] < '24'): ?>timer--finishing<?php endif?>">
+                        <?=$timeLeft[0]?>:<?=$timeLeft[1]?>
                     </div>
                     <div class="lot-item__cost-state">
                         <div class="lot-item__rate">
@@ -100,4 +92,4 @@
             </div>
         </div>
     </section>
-</>
+</main>

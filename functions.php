@@ -17,7 +17,9 @@ function timeLeft(string $dateEnd): array
 function getCategories(mysqli $con): array
 {
     $sql_categories = 'SELECT * FROM Categories';
-    $result_categories = mysqli_query($con, $sql_categories);
+    $stmt = mysqli_prepare($con, $sql_categories);
+    mysqli_stmt_execute($stmt);
+    $result_categories = mysqli_stmt_get_result($stmt);
     return mysqli_fetch_all($result_categories, MYSQLI_ASSOC);
 }
 
@@ -28,7 +30,9 @@ function getLots(mysqli $con): array
                 JOIN Categories AS c ON c.id = l.category_id
                 WHERE l.date_finished >= CURRENT_DATE
                 ORDER BY l.created_datetime DESC';
-    $result_lots = mysqli_query($con, $sql_lots);
+    $stmt = mysqli_prepare($con, $sql_lots);
+    mysqli_stmt_execute($stmt);
+    $result_lots = mysqli_stmt_get_result($stmt);
     return mysqli_fetch_all($result_lots, MYSQLI_ASSOC);
 }
 
@@ -37,12 +41,14 @@ function getLotId(mysqli $con, int $lot_id): array|null
     $sql_lot = "SELECT l.*, c.name AS category_name
                 FROM Lots AS l
                 JOIN Categories AS c ON c.id = l.category_id
-                WHERE l.id = $lot_id
+                WHERE l.id = ?
                 GROUP BY l.id";
-    $result_lot = mysqli_query($con, $sql_lot);
+    $stmt = mysqli_prepare($con, $sql_lot);
+    mysqli_stmt_bind_param($stmt, 'i', $lot_id);
+    mysqli_stmt_execute($stmt);
+    $result_lot = mysqli_stmt_get_result($stmt);
     return mysqli_fetch_assoc($result_lot);
 }
-
 
 function getPostVal(string $name): string {
     return $_POST[$name] ?? "";
@@ -50,49 +56,50 @@ function getPostVal(string $name): string {
 
 function addLot(mysqli $con, array $new_lot, int $creator_id): void
 {
-    $sql_lot_add = "INSERT INTO Lots(name, date_finished, description, img, start_price, step_price, creator_id, category_id)
-                    VALUES
-                    ('{$new_lot['lot-name']}', '{$new_lot['lot-date']}', '{$new_lot['message']}', '{$new_lot['lot-img']}', '{$new_lot['lot-rate']}', '{$new_lot['lot-step']}', '$creator_id', '{$new_lot['category']}')";
-    $result_lot = mysqli_query($con, $sql_lot_add);
+    $sql_lot_add = "INSERT INTO Lots(name, date_finished, description, img, start_price, step_price, creator_id, category_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = mysqli_prepare($con, $sql_lot_add);
+    mysqli_stmt_bind_param($stmt, 'ssssiiii', $new_lot['lot-name'], $new_lot['lot-date'], $new_lot['message'], $new_lot['lot-img'], $new_lot['lot-rate'], $new_lot['lot-step'], $creator_id, $new_lot['category']);
+    mysqli_stmt_execute($stmt);
 }
 
 
 function checkEmail(mysqli $con, string $email): bool
 {
-    $sql_email = 'SELECT email FROM Users
-                WHERE email = "' . mysqli_real_escape_string($con, $email) . '"';
-    $result_email = mysqli_query($con, $sql_email);
-    $result = mysqli_fetch_assoc($result_email);
-    if ($result !== null) {
-        return false;
-    }
-    return true;
+    $sql_email = 'SELECT email FROM Users WHERE email = ?';
+    $stmt = mysqli_prepare($con, $sql_email);
+    mysqli_stmt_bind_param($stmt, 's', $email);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_store_result($stmt);
+    return mysqli_stmt_num_rows($stmt) === 0;
 }
 
 function addUser(mysqli $con, array $new_user): void
 {
-    $sql_user_add = "INSERT INTO Users(email, name, password, contacts)
-                    VALUES
-                    ('{$new_user['email']}', '{$new_user['name']}', '{$new_user['password']}', '{$new_user['message']}')";
-    $result_user = mysqli_query($con, $sql_user_add);
+    $sql_user_add = "INSERT INTO Users(email, name, password, contacts) VALUES (?, ?, ?, ?)";
+    $stmt = mysqli_prepare($con, $sql_user_add);
+    mysqli_stmt_bind_param($stmt, 'ssss', $new_user['email'], $new_user['name'], $new_user['password'], $new_user['message']);
+    mysqli_stmt_execute($stmt);
 }
 
 function checkPassword(mysqli $con, string $email, string $password): bool
 {
-    $sql_password = 'SELECT password FROM Users
-                    WHERE email = "' . mysqli_real_escape_string($con, $email) . '"';
-    $result_password = mysqli_query($con, $sql_password);
-    $result = mysqli_fetch_assoc($result_password);
-    if ($result !== null && password_verify($password, $result['password']))  {
-        return true;
+    $sql_password = 'SELECT password FROM Users WHERE email = ?';
+    $stmt = mysqli_prepare($con, $sql_password);
+    mysqli_stmt_bind_param($stmt, 's', $email);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    if ($row = mysqli_fetch_assoc($result)) {
+        return password_verify($password, $row['password']);
     }
     return false;
 }
+
 function checkUser(mysqli $con, string $email): array
 {
-    $sql_user = "SELECT id, name FROM Users
-                    WHERE email =" . "'" . $email . "'";
-
-    $result_user = mysqli_query($con, $sql_user);
+    $sql_user = "SELECT id, name FROM Users WHERE email = ?";
+    $stmt = mysqli_prepare($con, $sql_user);
+    mysqli_stmt_bind_param($stmt, 's', $email);
+    mysqli_stmt_execute($stmt);
+    $result_user = mysqli_stmt_get_result($stmt);
     return mysqli_fetch_assoc($result_user);
 }

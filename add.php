@@ -3,7 +3,14 @@ require_once('functions.php');
 require_once('helpers.php');
 require_once('init.php');
 
+if (!isset($_SESSION['user_id']))
+{
+    header("Location: login.php");
+    exit;
+}
+
 $categories = getCategories($con);
+$nav = include_template('navigation.php', ['categories' => $categories]);
 $errors = [];
 $new_lot = [];
 
@@ -20,12 +27,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if ($new_lot['lot-rate'] === '') {
         $errors['lot-rate'] = 'Введите начальную цену';
-    } elseif (!(filter_var($new_lot['lot-rate'], FILTER_VALIDATE_FLOAT) && $new_lot['lot-rate'] > 0)) {
+    } elseif (($new_lot['lot-rate'] <= 0)) {
         $errors['lot-rate'] = 'Введите число больше 0';
     }
     if ($new_lot['lot-step'] === '') {
         $errors['lot-step'] = 'Введите шаг ставки';
-    } elseif (!(filter_var($new_lot['lot-step'], FILTER_VALIDATE_INT) && $new_lot['lot-step'] > 0)) {
+    } elseif ((filter_var($new_lot['lot-step'], FILTER_VALIDATE_INT)) <= 0) {
         $errors['lot-step'] = 'Введите целое число больше 0';
     }
     if (empty($new_lot['lot-date'])) {
@@ -51,12 +58,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         move_uploaded_file($_FILES['lot-img']['tmp_name'], $file_path . $file_name);
         $new_lot['lot-img'] = $file_url;
         addLot($con, $new_lot, $_SESSION['user_id']);
-        $new_lot = mysqli_insert_id($con);
-        header('Location: lot.php?id=' . $new_lot);
+        $new_lot_id = mysqli_insert_id($con);
+        header('Location: lot.php?id=' . $new_lot_id);
     }
 }
 
 $page_content = include_template('add-lot.php',[
+    'nav' => $nav,
     'categories' => $categories,
     'new_lot' => $new_lot,
     'errors' => $errors,
@@ -65,7 +73,7 @@ $page_content = include_template('add-lot.php',[
 $layout_content = include_template('layout.php', [
     'title' => 'Добавление лота',
     'page_content' => $page_content,
-    'categories' => $categories,
+    'nav' => $nav,
 ]);
 
 print($layout_content);

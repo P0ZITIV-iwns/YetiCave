@@ -4,6 +4,7 @@ require_once('helpers.php');
 require_once('init.php');
 
 $categories = getCategories($con);
+$nav = include_template('navigation.php', ['categories' => $categories,]);
 $errors = [];
 $user = [];
 
@@ -27,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $page_content = include_template('login.php',[
-    'categories' => $categories,
+    'nav' => $nav,
     'user' => $user,
     'errors' => $errors,
 ]);
@@ -35,7 +36,7 @@ $page_content = include_template('login.php',[
 $layout_content = include_template('layout.php', [
     'title' => 'Вход',
     'page_content' => $page_content,
-    'categories' => $categories,
+    'nav' => $nav,
 ]);
 
 print($layout_content);

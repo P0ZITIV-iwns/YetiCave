@@ -4,6 +4,7 @@ require_once('helpers.php');
 require_once('init.php');
 
 $categories = getCategories($con);
+$nav = include_template('navigation.php', ['categories' => $categories,]);
 $errors = [];
 $new_user = [];
 
@@ -31,15 +32,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $page_content = include_template('sign-up.php',[
-    'categories' => $categories,
+    'nav' => $nav,
     'new_user' => $new_user,
     'errors' => $errors,
+    
 ]);
 
 $layout_content = include_template('layout.php', [
     'title' => 'Регистрация',
     'page_content' => $page_content,
-    'categories' => $categories,
+    'nav' => $nav,
 ]);
 
 print($layout_content);
