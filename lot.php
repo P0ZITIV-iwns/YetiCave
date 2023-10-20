@@ -3,24 +3,20 @@ require_once('functions.php');
 require_once('helpers.php');
 require_once('init.php');
 
-if (!isset($_GET['id']))
-{
-    http_response_code(404);
-}
 
-$lot_id = (int)$_GET['id'];
 $categories = getCategories($con);
 $nav = include_template('navigation.php', ['categories' => $categories,]);
-$lot = getLotId($con, $lot_id);
-
-if (!$lot)
+if (!isset($_GET['id']))
 {
-    http_response_code(404);
+    $page_content = include_template('404.php', ['categories' => getCategories($con)]);
 }
 
-if (http_response_code() === 404) {
+$lot = getLotId($con, $_GET['id']);
+
+if (http_response_code() === 404) 
+{
     $page_content = include_template("404.php", ["nav" => $nav]);
-}else{
+} else {
     $page_content = include_template("lot.php", [
         "categories" => $categories,
         "lot" => $lot,
@@ -29,7 +25,7 @@ if (http_response_code() === 404) {
 }
 
 $layout_content = include_template("layout.php", [
-    'title' => $lot ? $lot['name'] : 'Страница не найдена' ,
+    'title' => is_array($lot) ? $lot['name'] : 'Страница не найдена',
     'page_content' => $page_content,
     'nav' => $nav,
 ]);

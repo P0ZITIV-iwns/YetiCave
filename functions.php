@@ -36,7 +36,7 @@ function getLots(mysqli $con): array
     return mysqli_fetch_all($result_lots, MYSQLI_ASSOC);
 }
 
-function getLotId(mysqli $con, int $lot_id): array|null
+function getLotId(mysqli $con, int $lot_id): array|int
 {
     $sql_lot = "SELECT l.*, c.name AS category_name
                 FROM Lots AS l
@@ -47,7 +47,8 @@ function getLotId(mysqli $con, int $lot_id): array|null
     mysqli_stmt_bind_param($stmt, 'i', $lot_id);
     mysqli_stmt_execute($stmt);
     $result_lot = mysqli_stmt_get_result($stmt);
-    return mysqli_fetch_assoc($result_lot);
+    $rows = mysqli_fetch_all($result_lot, MYSQLI_ASSOC);
+    return mysqli_num_rows($result_lot) !== 0 ? $rows[0] : http_response_code(404);
 }
 
 function getPostVal(string $name): string {
