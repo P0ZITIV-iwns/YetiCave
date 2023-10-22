@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$page_content = include_template('add-lot.php',[
+$page_content = include_template('add-lot.php', [
     'nav' => $nav,
     'categories' => $categories,
     'new_lot' => $new_lot,

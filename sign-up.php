@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$page_content = include_template('sign-up.php',[
+$page_content = include_template('sign-up.php', [
     'nav' => $nav,
     'new_user' => $new_user,
     'errors' => $errors,

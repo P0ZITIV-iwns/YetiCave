@@ -15,8 +15,8 @@
             <a class="main-header__logo" <?php if (basename($_SERVER['SCRIPT_FILENAME']) !== 'index.php') { echo 'href="/"'; } ?>>
                 <img src="../img/logo.svg" width="160" height="39" alt="Логотип компании YetiCave">
             </a>
-            <form class="main-header__search" method="get" action="https://echo.htmlacademy.ru" autocomplete="off">
-                <input type="search" name="search" placeholder="Поиск лота">
+            <form class="main-header__search" method="get" action="search.php" autocomplete="off">
+                <input type="search" name="search" value="<?=$_GET['search'] ?? ''?>" placeholder="Поиск лота">
                 <input class="main-header__search-btn" type="submit" name="find" value="Найти">
             </form>
             <?php $style_add = isset($_SESSION['user_id']) ? "visible" : "hidden"; ?>

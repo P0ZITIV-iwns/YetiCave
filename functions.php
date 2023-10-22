@@ -38,8 +38,7 @@ function getLots(mysqli $con): array
 
 function getLotId(mysqli $con, int $lot_id): array|int
 {
-    $sql_lot = "SELECT l.*, c.name AS category_name
-                FROM Lots AS l
+    $sql_lot = "SELECT l.*, c.name AS category_name FROM Lots AS l
                 JOIN Categories AS c ON c.id = l.category_id
                 WHERE l.id = ?
                 GROUP BY l.id";
@@ -103,4 +102,39 @@ function checkUser(mysqli $con, string $email): array
     mysqli_stmt_execute($stmt);
     $result_user = mysqli_stmt_get_result($stmt);
     return mysqli_fetch_assoc($result_user);
+}
+
+function getLotsBySearch(mysqli $con, string $search, int $page, int $offset, int $limit): array
+{
+    $sql_search_lots = "SELECT l.*, c.name AS category_name FROM Lots AS l
+                        JOIN Categories AS c ON c.id = l.category_id
+                        WHERE MATCH(l.name, l.description) AGAINST(?) AND l.date_finished >= CURRENT_DATE
+                        ORDER BY l.created_datetime DESC
+                        LIMIT ? OFFSET ?";
+    $stmt = mysqli_prepare($con, $sql_search_lots);
+    mysqli_stmt_bind_param($stmt, 'sii', $search, $limit, $offset);
+    mysqli_stmt_execute($stmt);
+    $result_lots = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result_lots, MYSQLI_ASSOC);
+
+}
+
+function getCountLotsBySearch(mysqli $con, string $search): int
+{
+    $sql_count_lots = "SELECT COUNT(*) FROM Lots WHERE MATCH(name, description) AGAINST(?) AND date_finished >= CURRENT_DATE";
+    $stmt = mysqli_prepare($con, $sql_count_lots);
+    mysqli_stmt_bind_param($stmt, 's', $search);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_array($result);
+    return (int)($row[0] ?? 0);
+}
+
+function createPagination(int $currentPage, int $countLots, int $limit): array
+{
+    $countPages = (int)ceil($countLots / $limit); // Получаем кол-во страниц
+    $pages = range(1, $countPages); // Создаём массив страниц
+    $prevPage = ($currentPage > 1) ? $currentPage - 1 : $currentPage;
+    $nextPage = ($currentPage < $countPages) ? $currentPage + 1 : $currentPage;
+    return ['prevPage' => $prevPage, 'nextPage' => $nextPage, 'countPages' => $countPages, 'pages' => $pages, 'currentPage' => $currentPage];
 }

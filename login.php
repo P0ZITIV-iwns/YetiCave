@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$page_content = include_template('login.php',[
+$page_content = include_template('login.php', [
     'nav' => $nav,
     'user' => $user,
     'errors' => $errors,
