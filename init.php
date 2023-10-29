@@ -18,3 +18,5 @@ mysqli_set_charset($con, "utf8");
 if (!$con) {
     print(mysqli_connect_error());
 }
+
+determineWinner($con);

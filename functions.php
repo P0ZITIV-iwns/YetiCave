@@ -50,7 +50,8 @@ function getLotId(mysqli $con, int $lot_id): array|int
     return mysqli_num_rows($result_lot) !== 0 ? $rows[0] : http_response_code(404);
 }
 
-function getPostVal(string $name): string {
+function getPostVal(string $name): string 
+{
     return $_POST[$name] ?? "";
 }
 
@@ -137,4 +138,97 @@ function createPagination(int $currentPage, int $countLots, int $limit): array
     $prevPage = ($currentPage > 1) ? $currentPage - 1 : $currentPage;
     $nextPage = ($currentPage < $countPages) ? $currentPage + 1 : $currentPage;
     return ['prevPage' => $prevPage, 'nextPage' => $nextPage, 'countPages' => $countPages, 'pages' => $pages, 'currentPage' => $currentPage];
+}
+
+function getLastBet(mysqli $con, int $lot_id): array|null
+{
+    $sql_bet = "SELECT * FROM Bets WHERE lot_id = ? ORDER BY price DESC LIMIT 1";
+    $stmt = mysqli_prepare($con, $sql_bet);
+    mysqli_stmt_bind_param($stmt, 'i', $lot_id);
+    mysqli_stmt_execute($stmt);
+    $result_bet = mysqli_stmt_get_result($stmt);
+    $rows = mysqli_fetch_all($result_bet, MYSQLI_ASSOC);
+    return $rows[0] ?? null;
+    
+}
+
+function getBetsHistory(mysqli $con, int $lot_id): array
+{
+    $sql_bets = "SELECT b.*, u.name AS user_name FROM Bets AS b
+                JOIN Users AS u ON u.id = b.user_id
+                WHERE lot_id = ? ORDER BY price DESC";
+    $stmt = mysqli_prepare($con, $sql_bets);
+    mysqli_stmt_bind_param($stmt, 'i', $lot_id);
+    mysqli_stmt_execute($stmt);
+    $result_bets = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result_bets, MYSQLI_ASSOC);
+}
+
+function getPastTime(string $date): string
+{
+    $diffTime = time() - strtotime($date);
+
+    $hours = floor($diffTime / SECONDS_IN_MINUTE**2);
+    if ($hours > 48) {
+        return date('d.m.y в H:i', strtotime($date));
+    } else if ($hours > 24) {
+        return date('Вчера, в H:i', strtotime($date));
+    } else if ($hours > 0){
+        return $hours . " " . get_noun_plural_form($hours, "час", "часа", "часов") . " назад";
+    } else {
+        $minutes = floor($diffTime / SECONDS_IN_MINUTE);
+        return $minutes == 0 ? "Только что" : $minutes . " " . get_noun_plural_form($minutes, "минуту", "минуты", "минут") . " назад";
+    }  
+}
+
+function addBet(mysqli $con, int $price, int $lot_id, int $creator_id): void
+{
+    $sql_bet_add = "INSERT INTO Bets(user_id, lot_id, price) VALUES (?, ?, ?)";
+    $stmt = mysqli_prepare($con, $sql_bet_add);
+    mysqli_stmt_bind_param($stmt, 'iii', $creator_id, $lot_id, $price);
+    mysqli_stmt_execute($stmt);
+}
+
+function getBets(mysqli $con, int $user_id): array
+{
+    $sql_bets = 'SELECT b.*, l.name AS lot_name, l.img AS lot_img, l.id AS lot_id, l.date_finished AS lot_date_finished, l.winner_id AS lot_winner, c.name AS category_name
+                FROM Bets AS b
+                JOIN Lots AS l ON l.id = b.lot_id
+                JOIN Categories AS c ON c.id = l.category_id
+                WHERE b.user_id = ?
+                ORDER BY b.created_datetime DESC';
+    $stmt = mysqli_prepare($con, $sql_bets);
+    mysqli_stmt_bind_param($stmt, 'i', $user_id);
+    mysqli_stmt_execute($stmt);
+    $result_bets = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result_bets, MYSQLI_ASSOC);
+}
+
+
+function determineWinner(mysqli $con): void 
+{
+    $endLots = getEndLots($con);
+    foreach ($endLots as $lot) {
+        $lastBet = getLastBet($con, $lot['id']);
+        if (isset($lastBet)) {
+            setWinner($con, $lastBet['user_id'], $lot['id']);
+        }   
+    }
+}
+
+function getEndLots(mysqli $con): array 
+{   
+    $sql_lots = "SELECT * FROM Lots WHERE date_finished < CURRENT_DATE";
+    $stmt = mysqli_prepare($con, $sql_lots);
+    mysqli_stmt_execute($stmt);
+    $result_lots = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result_lots, MYSQLI_ASSOC);
+}
+
+function setWinner(mysqli $con, int $user_id, int $lot_id): void 
+{
+    $sql_update = "UPDATE Lots SET winner_id = ? WHERE id = ?";
+    $stmt = mysqli_prepare($con, $sql_update);
+    mysqli_stmt_bind_param($stmt, 'ii', $user_id, $lot_id);
+    mysqli_stmt_execute($stmt);
 }
