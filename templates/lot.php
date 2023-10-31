@@ -19,10 +19,10 @@
                     <div class="lot-item__cost-state">
                         <div class="lot-item__rate">
                             <span class="lot-item__amount">Текущая цена</span>
-                            <span class="lot-item__cost"><?= htmlspecialchars(format($lastBet['price'] === 0 ? $lot['start_price'] : $lastBet['price'])); ?></span>
+                            <span class="lot-item__cost"><?= htmlspecialchars(format($lastBet === null ? $lot['start_price'] : $lastBet['price'])); ?></span>
                         </div>
                         <div class="lot-item__min-cost">
-                            Мин. ставка <span><?= htmlspecialchars(format($lastBet['price'] === 0 ? $lot['start_price'] : $lastBet['price'] + $lot['step_price'])); ?></span>
+                            Мин. ставка <span><?= htmlspecialchars(format($lastBet === null ? $lot['start_price'] : $lastBet['price'] + $lot['step_price'])); ?></span>
                         </div>
                     </div>
                     <?php $style_add = isset($_SESSION['user_id']) ? "flex" : "none"; ?>
@@ -30,7 +30,7 @@
                         <?php $classname = $error !== '' ? "form__item--invalid" : ""; ?>
                         <p class="lot-item__form-item form__item <?= $classname; ?>">
                             <label for="cost">Ваша ставка</label>
-                            <input id="cost" type="text" name="cost" placeholder="<?= htmlspecialchars(format($lastBet['price'] === 0 ? $lot['start_price'] : $lastBet['price'] + $lot['step_price'])); ?>">
+                            <input id="cost" type="text" name="cost" placeholder="<?= htmlspecialchars(format($lastBet === null ? $lot['start_price'] : $lastBet['price'] + $lot['step_price'])); ?>">
                             <span class="form__error"><?= $error; ?></span>
                         </p>
                         <button type="submit" class="button">Сделать ставку</button>
