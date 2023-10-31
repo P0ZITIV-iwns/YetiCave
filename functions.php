@@ -117,14 +117,42 @@ function getLotsBySearch(mysqli $con, string $search, int $page, int $offset, in
     mysqli_stmt_execute($stmt);
     $result_lots = mysqli_stmt_get_result($stmt);
     return mysqli_fetch_all($result_lots, MYSQLI_ASSOC);
-
 }
 
-function getCountLotsBySearch(mysqli $con, string $search): int
+function getLotsByCategory(mysqli $con, string $categoryName, int $page, int $offset, int $limit): array
+{
+    $sql_search_lots = "SELECT l.*, c.name AS category_name FROM Lots AS l
+                        JOIN Categories AS c ON c.id = l.category_id
+                        WHERE c.name = ? AND l.date_finished >= CURRENT_DATE
+                        ORDER BY l.created_datetime DESC
+                        LIMIT ? OFFSET ?";
+    $stmt = mysqli_prepare($con, $sql_search_lots);
+    mysqli_stmt_bind_param($stmt, 'sii', $categoryName, $limit, $offset);
+    mysqli_stmt_execute($stmt);
+    $result_lots = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_all($result_lots, MYSQLI_ASSOC);
+}
+
+function getCountLotsBySearch(mysqli $con, string $categoryName): int
 {
     $sql_count_lots = "SELECT COUNT(*) FROM Lots WHERE MATCH(name, description) AGAINST(?) AND date_finished >= CURRENT_DATE";
     $stmt = mysqli_prepare($con, $sql_count_lots);
     mysqli_stmt_bind_param($stmt, 's', $search);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_array($result);
+    return (int)($row[0] ?? 0);
+}
+
+function getCountLotsByCategory(mysqli $con, $categoryName): int
+{
+    $sql_count_lots = "SELECT COUNT(*) FROM Lots JOIN Categories AS c ON c.id = category_id WHERE c.name = ? AND date_finished >= CURRENT_DATE";
+    $stmt = mysqli_prepare($con, $sql_count_lots);
+
+    if (!$stmt) {
+        die('Preparation of the SQL statement failed: ' . mysqli_error($con));
+    }
+    mysqli_stmt_bind_param($stmt, 's', $categoryName);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $row = mysqli_fetch_array($result);
@@ -232,3 +260,4 @@ function setWinner(mysqli $con, int $user_id, int $lot_id): void
     mysqli_stmt_bind_param($stmt, 'ii', $user_id, $lot_id);
     mysqli_stmt_execute($stmt);
 }
+
