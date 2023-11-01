@@ -25,7 +25,11 @@
                             Мин. ставка <span><?= htmlspecialchars(format($lastBet === null ? $lot['start_price'] : $lastBet['price'] + $lot['step_price'])); ?></span>
                         </div>
                     </div>
-                    <?php $style_add = isset($_SESSION['user_id']) ? "flex" : "none"; ?>
+                    <?php 
+                        $style_add = isset($_SESSION['user_id']) && 
+                                    $_SESSION['user_id'] !== $lot['creator_id'] && 
+                                    (!isset($lastBet['user_id']) || $_SESSION['user_id'] !== $lastBet['user_id']) ? "flex" : "none"; 
+                    ?>
                     <form class="lot-item__form" action="lot.php?id=<?= $lot["id"]; ?>" method="post" autocomplete="off" style="display: <?= $style_add; ?>">
                         <?php $classname = $error !== '' ? "form__item--invalid" : ""; ?>
                         <p class="lot-item__form-item form__item <?= $classname; ?>">
