@@ -1,10 +1,10 @@
 <?php
 session_start();
 
-/*const HOSTNAME = 'localhost';
-const USERNAME = 'giphyrii';
-const PASSWORD = 'my4rEU';
-const DATABASE = 'giphyrii_m3';*/
+// const HOSTNAME = 'localhost';
+// const USERNAME = 'giphyrii';
+// const PASSWORD = 'my4rEU';
+// const DATABASE = 'giphyrii_m3';
 
 const HOSTNAME = 'yeticave';
 const USERNAME = 'root';

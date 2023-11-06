@@ -35,7 +35,7 @@
             <ul class="pagination-list">
                 <li class="pagination-item pagination-item-prev">
                     <?php if ($pagination['currentPage'] !== min($pagination['pages'])): ?>
-                        <a href="<?='/search.php?search=' . htmlspecialchars($search) . '&page=' . htmlspecialchars($pagination['prevPage'])?>">Назад</a>
+                        <a href="<?='/all-lots.php?name=' . htmlspecialchars($categoryName) . '&page=' . htmlspecialchars($pagination['prevPage'])?>">Назад</a>
                     <?php else : ?>
                         <a>Назад</a>
                     <?php endif; ?>
@@ -47,13 +47,13 @@
                     </li>
                     <?php else :?>
                     <li class="pagination-item">
-                        <a href="<?='/search.php?search=' . htmlspecialchars($search) . '&page=' . htmlspecialchars($numberPage)?>"><?=htmlspecialchars($numberPage)?></a>
+                        <a href="<?='/all-lots.php?name=' . htmlspecialchars($categoryName) . '&page=' . htmlspecialchars($numberPage)?>"><?=htmlspecialchars($numberPage)?></a>
                     </li>
                     <?php endif;?>
                 <?php endforeach;?>
                 <li class="pagination-item pagination-item-next">
                     <?php if ($pagination['currentPage'] !== max($pagination['pages'])): ?>
-                        <a href="<?='/search.php?search=' . htmlspecialchars($search) . '&page=' . htmlspecialchars($pagination['nextPage'])?>">Вперед</a>
+                        <a href="<?='/all-lots.php?name=' . htmlspecialchars($categoryName) . '&page=' . htmlspecialchars($pagination['nextPage'])?>">Вперед</a>
                     <?php else : ?>
                         <a>Вперед</a>
                     <?php endif; ?>  
