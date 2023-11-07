@@ -12,7 +12,7 @@ $countLots = getCountLotsByCategory($con, $categoryName);
 $pagination = createPagination($currentPage, $countLots, LIMIT);
 $categories = getCategories($con);
 $lots = getLotsByCategory($con, $categoryName, $currentPage, $currentOffset, LIMIT);
-$nav = include_template('navigation.php', ['categories' => $categories,]);
+$nav = include_template('navigation.php', ['categories' => $categories, 'categoryName' => $categoryName,]);
 
 $page_content = include_template('all-lots.php', [
     'nav' => $nav,
