@@ -242,7 +242,7 @@ function getCountLotsBySearch(mysqli $con, string $search): int
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $row = mysqli_fetch_array($result);
-    return (int)($row[0] ?? 0);
+    return $row[0] ?? 0;
 }
 
 /**
@@ -260,7 +260,7 @@ function getCountLotsByCategory(mysqli $con, string $categoryName): int
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $row = mysqli_fetch_array($result);
-    return (int)($row[0] ?? 0);
+    return $row[0] ?? 0;
 }
 
 /**

@@ -12,9 +12,20 @@
             </div>
             <div class="lot-item__right">
                 <div class="lot-item__state">
-                    <?php $timeLeft = timeLeft($lot['date_finished']); ?>
-                    <div class="lot-item__timer timer <?php if($timeLeft[0] < '24'): ?>timer--finishing<?php endif?>">
-                        <?=$timeLeft[0]?>:<?=$timeLeft[1]?>
+                    <?php $timeLeft = timeLeft($lot['date_finished']); 
+                        $value = $timeLeft[0] . ':' . $timeLeft[1];
+                        $style_add = '';
+                    ?>
+                    <?php if (strtotime($lot['date_finished'] . '+1 day') <= time()): 
+                        $value = 'Истекло';
+                        $style_add = '';
+                    ?>              
+                    <?php elseif($timeLeft[0] < '24'): 
+                        $style_add = 'timer--finishing';
+                    ?> 
+                    <?php endif?>
+                    <div class="lot-item__timer timer <?= $style_add; ?>">
+                        <?= $value; ?>
                     </div>
                     <div class="lot-item__cost-state">
                         <div class="lot-item__rate">
@@ -28,7 +39,8 @@
                     <?php 
                         $style_add = isset($_SESSION['user_id']) && 
                                     $_SESSION['user_id'] !== $lot['creator_id'] && 
-                                    (!isset($lastBet['user_id']) || $_SESSION['user_id'] !== $lastBet['user_id']) ? "flex" : "none"; 
+                                    (!isset($lastBet['user_id']) || $_SESSION['user_id'] !== $lastBet['user_id']) &&
+                                    !(strtotime($lot['date_finished'] . ' +1 day') <= time()) ? "flex" : "none"; 
                     ?>
                     <form class="lot-item__form" action="lot.php?id=<?= $lot["id"]; ?>" method="post" autocomplete="off" style="display: <?= $style_add; ?>">
                         <?php $classname = $error !== '' ? "form__item--invalid" : ""; ?>

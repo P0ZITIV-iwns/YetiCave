@@ -26,7 +26,7 @@ if (http_response_code() === 404)
             $error = 'Введите сумму ставки';
         } elseif ((filter_var($price, FILTER_VALIDATE_INT)) <= 0) {
             $error = 'Введите целое число больше 0';
-        } elseif ($price < ($lastBet['price'] === 0 ? $lot['start_price'] : $lastBet['price'] + $lot['step_price'])) {
+        } elseif ($price < (empty($lastBet['price']) ? $lot['start_price'] : $lastBet['price'] + $lot['step_price'])) {
             $error = 'Сумма ставки меньше минимальной';
         } else {
             print($error);
