@@ -28,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $new_user['password'] = password_hash($new_user['password'], PASSWORD_DEFAULT);
         addUser($con, $new_user);
         header('Location: login.php');
+        exit();
     }
 }
 

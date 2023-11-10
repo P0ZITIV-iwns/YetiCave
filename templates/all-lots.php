@@ -29,36 +29,36 @@
                         </li>
                     <?php endforeach; ?>
                 </ul>
+                <?php if (isset($pagination['countPages']) && $pagination['countPages'] > 1) :?>
+                    <ul class="pagination-list">
+                        <li class="pagination-item pagination-item-prev">
+                            <?php if ($pagination['currentPage'] !== min($pagination['pages'])): ?>
+                                <a href="<?='/all-lots.php?name=' . htmlspecialchars($categoryName) . '&page=' . htmlspecialchars($pagination['prevPage'])?>">Назад</a>
+                            <?php else : ?>
+                                <a>Назад</a>
+                            <?php endif; ?>
+                        </li>
+                        <?php foreach ($pagination['pages'] as $numberPage) :?>
+                            <?php if ($numberPage === $pagination['currentPage']) :?>
+                            <li class="pagination-item pagination-item-active">
+                                <a><?=htmlspecialchars($numberPage)?></a>
+                            </li>
+                            <?php else :?>
+                            <li class="pagination-item">
+                                <a href="<?='/all-lots.php?name=' . htmlspecialchars($categoryName) . '&page=' . htmlspecialchars($numberPage)?>"><?=htmlspecialchars($numberPage)?></a>
+                            </li>
+                            <?php endif;?>
+                        <?php endforeach;?>
+                        <li class="pagination-item pagination-item-next">
+                            <?php if ($pagination['currentPage'] !== max($pagination['pages'])): ?>
+                                <a href="<?='/all-lots.php?name=' . htmlspecialchars($categoryName) . '&page=' . htmlspecialchars($pagination['nextPage'])?>">Вперед</a>
+                            <?php else : ?>
+                                <a>Вперед</a>
+                            <?php endif; ?>  
+                        </li>
+                    </ul>
+                <?php endif;?>
             <?php endif; ?>
         </section>
-        <?php if (isset($pagination['countPages']) && $pagination['countPages'] > 1) :?>
-            <ul class="pagination-list">
-                <li class="pagination-item pagination-item-prev">
-                    <?php if ($pagination['currentPage'] !== min($pagination['pages'])): ?>
-                        <a href="<?='/all-lots.php?name=' . htmlspecialchars($categoryName) . '&page=' . htmlspecialchars($pagination['prevPage'])?>">Назад</a>
-                    <?php else : ?>
-                        <a>Назад</a>
-                    <?php endif; ?>
-                </li>
-                <?php foreach ($pagination['pages'] as $numberPage) :?>
-                    <?php if ($numberPage === $pagination['currentPage']) :?>
-                    <li class="pagination-item pagination-item-active">
-                        <a><?=htmlspecialchars($numberPage)?></a>
-                    </li>
-                    <?php else :?>
-                    <li class="pagination-item">
-                        <a href="<?='/all-lots.php?name=' . htmlspecialchars($categoryName) . '&page=' . htmlspecialchars($numberPage)?>"><?=htmlspecialchars($numberPage)?></a>
-                    </li>
-                    <?php endif;?>
-                <?php endforeach;?>
-                <li class="pagination-item pagination-item-next">
-                    <?php if ($pagination['currentPage'] !== max($pagination['pages'])): ?>
-                        <a href="<?='/all-lots.php?name=' . htmlspecialchars($categoryName) . '&page=' . htmlspecialchars($pagination['nextPage'])?>">Вперед</a>
-                    <?php else : ?>
-                        <a>Вперед</a>
-                    <?php endif; ?>  
-                </li>
-            </ul>
-        <?php endif;?>
     </div>
 </main>

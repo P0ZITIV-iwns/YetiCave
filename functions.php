@@ -366,10 +366,11 @@ function addBet(mysqli $con, int $price, int $lot_id, int $creator_id): void
  */
 function getBets(mysqli $con, int $user_id): array
 {
-    $sql_bets = 'SELECT b.*, l.name AS lot_name, l.img AS lot_img, l.id AS lot_id, l.date_finished AS lot_date_finished, l.winner_id AS lot_winner, c.name AS category_name
+    $sql_bets = 'SELECT b.*, l.name AS lot_name, l.img AS lot_img, l.id AS lot_id, l.date_finished AS lot_date_finished, l.winner_id AS lot_winner, u.contacts AS user_contacts, c.name AS category_name
                 FROM Bets AS b
                 JOIN Lots AS l ON l.id = b.lot_id
                 JOIN Categories AS c ON c.id = l.category_id
+                JOIN Users AS u on u.id = l.creator_id
                 WHERE b.user_id = ?
                 ORDER BY b.created_datetime DESC';
     $stmt = mysqli_prepare($con, $sql_bets);

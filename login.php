@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['user_name'] = $user_data['name'];
         $_SESSION['user_id'] = $user_data['id'];
         header('Location:/');
+        exit();
     }
 }
 

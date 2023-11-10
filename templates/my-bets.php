@@ -8,15 +8,21 @@
                     $value = $timeLeft[0] . ':' . $timeLeft[1];
                     $classTr = '';
                     $classTd = '';
+                    $contacts = '';
+                    $style_add = 'none';
                 ?>
                 <?php if($bet['lot_winner'] === $_SESSION['user_id']): 
                     $classTd = 'timer--win';
                     $classTr = 'rates__item--win';
+                    $style_add = 'block';
+                    $contacts = htmlspecialchars($bet['user_contacts']);
                     $value = 'Ставка выиграла';
                 ?>
                 <?php elseif (strtotime($bet['lot_date_finished'] . '+1 day') <= time()): 
                     $classTd = 'timer--end';
                     $classTr = 'rates__item--end';
+                    $style_add = 'none';
+                    $contacts = '';
                     $value = 'Торги окончены';
                 ?>              
                 <?php elseif($timeLeft[0] < '24'): 
@@ -28,7 +34,10 @@
                         <div class="rates__img">
                             <img src="<?= htmlspecialchars($bet['lot_img']); ?>" width="54" height="40" alt="<?= htmlspecialchars($bet['lot_name']); ?>">
                         </div>
-                        <h3 class="rates__title"><a href="/lot.php?id=<?= $bet['lot_id']?>"><?= htmlspecialchars($bet['lot_name']); ?></a></h3>
+                        <div>
+                            <h3 class="rates__title"><a href="/lot.php?id=<?= $bet['lot_id']?>"><?= htmlspecialchars($bet['lot_name']); ?></a></h3>
+                            <p><?= $contacts; ?></p>
+                        </div>
                     </td>
                     <td class="rates__category">
                         <?= htmlspecialchars($bet['category_name']); ?>

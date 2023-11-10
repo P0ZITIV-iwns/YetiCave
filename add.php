@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         addLot($con, $new_lot, $_SESSION['user_id']);
         $new_lot_id = mysqli_insert_id($con);
         header('Location: lot.php?id=' . $new_lot_id);
+        exit();
     }
 }
 
