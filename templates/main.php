@@ -27,7 +27,13 @@
                         <h3 class="lot__title"><a class="text-link" href="/lot.php?id=<?= $lot['id']?>"><?=htmlspecialchars($lot['name'])?></a></h3>
                         <div class="lot__state">
                             <div class="lot__rate">
-                                <span class="lot__amount">Стартовая цена</span>
+                                <span class="lot__amount">
+                                    <?php if (isset($lot['countBets'])): ?>
+                                        <?= $lot['countBets'] === 0 ? 'Стартовая цена' : $lot['countBets'] . get_noun_plural_form($lot['countBets'], " ставка", " ставки", " ставок") ?>
+                                    <?php else: ?>
+                                        Стартовая цена
+                                    <?php endif; ?>    
+                                </span>
                                 <span class="lot__cost"><?=htmlspecialchars(format($lot['start_price']))?></span>
                             </div>
                             <?php $timeLeft = timeLeft($lot['date_finished']); ?>
