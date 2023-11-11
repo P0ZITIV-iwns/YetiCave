@@ -18,6 +18,9 @@
         <ul class="lots__list">
             <!--заполните этот список из массива с товарами-->
             <?php foreach ($lots as $lot): ?>
+                <?php $countBets = count(getBetsHistory($con, $lot['id']));  
+                    $lastBet = getLastBet($con, $lot['id']);
+                ?>
                 <li class="lots__item lot">
                     <div class="lot__image">
                         <img src="<?=$lot['img']?>" width="350" height="260" alt="">
@@ -28,13 +31,13 @@
                         <div class="lot__state">
                             <div class="lot__rate">
                                 <span class="lot__amount">
-                                    <?php if (isset($lot['countBets'])): ?>
-                                        <?= $lot['countBets'] === 0 ? 'Стартовая цена' : $lot['countBets'] . get_noun_plural_form($lot['countBets'], " ставка", " ставки", " ставок") ?>
+                                    <?php if ($countBets): ?>
+                                        <?= $countBets . get_noun_plural_form($countBets, " ставка", " ставки", " ставок") ?>
                                     <?php else: ?>
                                         Стартовая цена
                                     <?php endif; ?>    
                                 </span>
-                                <span class="lot__cost"><?=htmlspecialchars(format($lot['start_price']))?></span>
+                                <span class="lot__cost"><?= htmlspecialchars(format($lastBet === null ? $lot['start_price'] : $lastBet['price'])); ?></span>
                             </div>
                             <?php $timeLeft = timeLeft($lot['date_finished']); ?>
                             <div class="lot__timer timer <?php if($timeLeft[0] < '24'): ?>timer--finishing<?php endif?>">

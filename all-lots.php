@@ -30,6 +30,7 @@ if (!$categoryExists) {
     $nav = include_template('navigation.php', ['categories' => $categories, 'categoryName' => $categoryName,]);
     
     $page_content = include_template('all-lots.php', [
+        'con' => $con,
         'nav' => $nav,
         'lots' => $lots,
         'categoryName' => $categoryName,
